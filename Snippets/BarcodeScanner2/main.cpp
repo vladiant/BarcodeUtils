@@ -1,5 +1,6 @@
 // https://www.learnopencv.com/barcode-and-qr-code-scanner-using-zbar-and-opencv/
 
+#include <chrono>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -23,8 +24,8 @@ void decode(cv::Mat &im, std::vector<decodedObject> &decodedObjects) {
   scanner.set_config(zbar::ZBAR_NONE, zbar::ZBAR_CFG_ENABLE, 1);
 
   // Convert image to grayscale
-    cv::Mat imGray;
-    cvtColor(im, imGray, CV_BGR2GRAY);
+  cv::Mat imGray;
+  cvtColor(im, imGray, CV_BGR2GRAY);
 
   // Wrap image data in a zbar image
   zbar::Image image(imGray.cols, imGray.rows, "Y800", (uchar *)imGray.data,
@@ -107,19 +108,14 @@ void displayImg(const cv::Mat &image, const std::string &name) {
 
 int main(int argc, char *argv[]) {
   std::cout << "OpenCV version: " << CV_VERSION << std::endl;
-    if (argc != 2) {
-      std::cout << " Usage: display_image ImageToLoadAndDisplay" << std::endl;
-      return -1;
-    }
+  if (argc != 2) {
+    std::cout << " Usage: display_image ImageToLoadAndDisplay" << std::endl;
+  }
 
-//   Read and display
-    cv::Mat image;
-    if (readImage(argv[1], image)) {
-      displayImg(image, "Orig");
-    } else {
-      return 0;
-    }
-
+  // Read and display
+  cv::Mat image;
+  if (argc > 1 && readImage(argv[1], image)) {
+    displayImg(image, "Orig");
 
     std::vector<decodedObject> decodedObjects;
 
@@ -128,31 +124,44 @@ int main(int argc, char *argv[]) {
     display(image, decodedObjects);
     cv::waitKey(0);
 
-//  cv::VideoCapture cap;
+  } else {
+    std::cout << "No image argument, attempting to use the camera" << std::endl;
+  }
 
-//  if (!cap.open(0)) {
-//    return -1;
-//  }
+  cv::VideoCapture cap;
 
-//  while (true) {
-//    cv::Mat frame;
-//    cap >> frame;
-//    if (frame.empty()) {
-//      break;
-//    }
-//    displayImg(frame, "Frame");
+  if (!cap.open(0)) {
+    std::cout << "Error opening the camera" << std::endl;
+    return -1;
+  }
 
-//    std::vector<decodedObject> decodedObjects;
+  while (true) {
+    cv::Mat frame;
+    cap >> frame;
+    if (frame.empty()) {
+      break;
+    }
+    displayImg(frame, "Frame");
 
-//    decode(frame, decodedObjects);
+    std::vector<decodedObject> decodedObjects;
 
-//    display(frame, decodedObjects);
+    const auto start_point = std::chrono::steady_clock::now();
 
-//    if (cv::waitKey(10) == 27) {
-//      break;
-//    }
-//  }
-//  cap.release();
+    decode(frame, decodedObjects);
+    display(frame, decodedObjects);
+
+    const auto end_point = std::chrono::steady_clock::now();
+    const auto elapsed_seconds =
+        std::chrono::duration_cast<std::chrono::microseconds>(end_point -
+                                                              start_point);
+
+    std::cout << "Decode time [ms]: " << elapsed_seconds.count() << std::endl;
+
+    if (cv::waitKey(10) == 27) {
+      break;
+    }
+  }
+  cap.release();
 
   std::cout << "Done." << std::endl;
   return 0;
