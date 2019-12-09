@@ -1,6 +1,6 @@
 // https://www.pyimagesearch.com/2014/11/24/detecting-barcodes-images-python-opencv/
 
-#include <cv.hpp>
+#include <opencv/cv.hpp>
 #include <iostream>
 
 int main(int argc, char *argv[]) {
