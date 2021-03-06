@@ -1,4 +1,4 @@
-//https://github.com/ironvietman/barcodeScanner
+// https://github.com/ironvietman/barcodeScanner
 
 #include <iostream>
 #include <opencv2/core/core.hpp>

@@ -1,7 +1,7 @@
 // https://www.pyimagesearch.com/2014/11/24/detecting-barcodes-images-python-opencv/
 
-#include <opencv/cv.hpp>
 #include <iostream>
+#include <opencv/cv.hpp>
 
 int main(int argc, char *argv[]) {
   constexpr char initial_frame_name[] = "Initial Frame";

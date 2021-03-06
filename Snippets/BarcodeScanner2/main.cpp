@@ -1,13 +1,12 @@
 // https://www.learnopencv.com/barcode-and-qr-code-scanner-using-zbar-and-opencv/
 
+#include <zbar.h>
+
 #include <chrono>
 #include <iostream>
+#include <opencv/cv.hpp>
 #include <string>
 #include <vector>
-
-#include <opencv/cv.hpp>
-
-#include <zbar.h>
 
 typedef struct {
   std::string type;
