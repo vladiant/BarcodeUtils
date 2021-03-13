@@ -3,8 +3,8 @@
 #include <zbar.h>
 
 #include <chrono>
-#include <cv.hpp>
 #include <iostream>
+#include <opencv2/opencv.hpp>
 #include <string>
 #include <vector>
 
@@ -24,7 +24,7 @@ void decode(cv::Mat &im, std::vector<decodedObject> &decodedObjects) {
 
   // Convert image to grayscale
   cv::Mat imGray;
-  cvtColor(im, imGray, CV_BGR2GRAY);
+  cvtColor(im, imGray, cv::COLOR_BGR2GRAY);
 
   // Wrap image data in a zbar image
   zbar::Image image(imGray.cols, imGray.rows, "Y800", (uchar *)imGray.data,
